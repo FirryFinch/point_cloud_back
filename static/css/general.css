@@ -115,6 +115,23 @@ body{
     background-size: contain;
 }
 
+.edit_logo2{
+    background-image: url("../icons/edit_grey.png");
+    min-width: 2.6vh;
+    min-height: 2.6vh;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.edit_logo2:hover{
+    cursor: pointer;
+    background-image: url("../icons/edit_orange.png");
+    min-width: 2.6vh;
+    min-height: 2.6vh;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
 .add_logo{
     background-image: url("../icons/add_grey.png");
     min-width: 2.6vh;

@@ -27,7 +27,7 @@
             <div class="text_h5"> {{ obj.name }}</div>
             <div class="text_h5"> {{ obj.time_create }}</div>
             <div class="text_h5"> {{ obj.created_by }} ({{ obj.created_by.last_name }} {{ obj.created_by.first_name }})</div>
-            <div class="edit_logo" onclick="location.href='{% url 'edit_file' pk=obj.id%}'"></div>
+            <div class="edit_logo2" onclick="location.href='{% url 'edit_file' pk=obj.id%}'"></div>
             <div class="del_logo" onclick="if (confirm('Вы действительно хотите удалить файл {{ obj.file }} и привязанный к нему объект {{ obj.name }}?')) {location.href='{% url 'delete_file' pk=obj.id %}'} else {return false;}"></div>
         {% endfor %}
         <div class="add_logo" style="background-position: center" onclick="location.href='new'"></div>
