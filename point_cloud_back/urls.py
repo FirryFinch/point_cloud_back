@@ -15,18 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import path, include
-
-from point_cloud_back import settings
 
 urlpatterns = [
     path('', include('point_cloud_app.urls_app')),
+    path('api/', include('point_cloud_app.urls_api')),
     path('admin/', admin.site.urls),
 ]
 
-handler404 = 'point_cloud_app.views.err404'
-handler400 = 'point_cloud_app.views.err400'
-handler403 = 'point_cloud_app.views.err403'
-handler500 = 'point_cloud_app.views.err500'
+handler404 = 'point_cloud_app.views_app.err404'
+handler400 = 'point_cloud_app.views_app.err400'
+handler403 = 'point_cloud_app.views_app.err403'
+handler500 = 'point_cloud_app.views_app.err500'
 

@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import Object
+from rest_framework.relations import PrimaryKeyRelatedField
+
+from .models import Object, Class, Subclass
 
 
 class ObjectSerializer(serializers.ModelSerializer):
@@ -8,4 +10,16 @@ class ObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Object
+        fields = '__all__'
+
+
+class ClassSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Class
+        fields = '__all__'
+
+
+class SubclassSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subclass
         fields = '__all__'

@@ -2,13 +2,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+
 from django.shortcuts import render, redirect
 from django.views.generic import UpdateView
 
 from point_cloud_back.settings import MINIO_STORAGE_ENDPOINT, MINIO_STORAGE_ACCESS_KEY, MINIO_STORAGE_SECRET_KEY, \
     MINIO_STORAGE_MEDIA_BUCKET_NAME
+
 from .models import Class, Subclass, Object
+
 from .forms import ClassForm, SubclassForm, ObjectForm, LoginUserForm
+
 from minio import Minio
 
 # Create your views here.
@@ -19,16 +23,6 @@ client = Minio(
     secret_key=MINIO_STORAGE_SECRET_KEY,
     secure=False,
 )
-
-
-class LoginUser(LoginView):
-    form_class = LoginUserForm
-    template_name = 'login.html'
-
-
-def logout_user(request):
-    logout(request)
-    return redirect('login')
 
 
 @login_required
@@ -62,6 +56,16 @@ def err500(request, *args, **argv):
     response = render(request, 'error.html', context=context)
     response.status_code = 500
     return response
+
+
+class LoginUser(LoginView):
+    form_class = LoginUserForm
+    template_name = 'login.html'
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
 
 
 @login_required
@@ -100,6 +104,7 @@ class EditClass(UpdateView):
     def form_valid(self, form):
         form.save()
         return redirect('entities_classes')
+
 
 @login_required
 def delete_class(request, pk):
@@ -192,12 +197,6 @@ def delete_object(request, pk):
 
 
 @login_required
-def users(request):
-    us = User.objects.all()
-    return render(request, 'users.html', {'us': us})
-
-
-@login_required
 def entities_files(request):
     objects = Object.objects.all()
     return render(request, 'entities/entities_files.html', {'objects': objects})
@@ -235,3 +234,9 @@ def delete_file(request, pk):
     client.remove_object(MINIO_STORAGE_MEDIA_BUCKET_NAME, ob.file.name)
     ob.delete()
     return redirect('entities_files')
+
+
+@login_required
+def users(request):
+    us = User.objects.all()
+    return render(request, 'users.html', {'us': us})

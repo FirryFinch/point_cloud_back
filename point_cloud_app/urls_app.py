@@ -1,20 +1,20 @@
 from django.urls import path
 from django.contrib.auth.decorators import login_required
-from point_cloud_app.views import \
+from point_cloud_app.views_app import \
     LoginUser, logout_user, \
     main, \
     entities_classes, new_class, EditClass, delete_class, \
     entities_subclasses, new_subclass, EditSubclass, delete_subclass,\
-    entities_objects, new_object, EditObject, delete_object,\
-    users, \
-    entities_files, new_file, EditFile, delete_file
+    entities_objects, new_object, EditObject, delete_object, \
+    entities_files, new_file, EditFile, delete_file, \
+    users \
 
 
 urlpatterns = [
+    path('', main, name='main'),
+
     path('login/', LoginUser.as_view(), name='login'),
     path('logout/', logout_user, name='logout'),
-
-    path('', main, name='main'),
 
     path('entities/classes', entities_classes, name='entities_classes'),
     path('entities/classes/new', new_class, name='new_class'),

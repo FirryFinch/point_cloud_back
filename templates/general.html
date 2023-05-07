@@ -18,7 +18,7 @@
         <div class="home_logo" style="margin-left: auto; margin-right: 2vh;" onclick="location.href='{% url 'main' %}'"></div>
         <div class="text_h5">
             {% if user.last_name != "" %}
-                {{ user.last_name }} {{ user.first_name | slice:"1" }}
+                {{ user.last_name }} {{ user.first_name | slice:"1" }}.
             {% else %}
                 {{ user.username }}
             {% endif %}
