@@ -8,6 +8,7 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from point_cloud_app.las_to_json_coordinates import get_las_data
 from point_cloud_app.models import Class, Subclass, Object
 from point_cloud_app.serializer import ClassSerializer, SubclassSerializer, ObjectSerializer
 
@@ -134,15 +135,17 @@ class ObjectsView(APIView):
         output = [
             {
                 "name": output.name,
+                "cl": output.subcl.cl.title,
+                "subcl": output.subcl.title,
                 "length": output.length,
                 "width": output.width,
                 "height": output.height,
                 "time_create": output.time_create,
-                "time_update": output.time_update,
-                "file": output.file.url,
-                "num": output.num,
                 "created_by": output.created_by.username,
-                "subcl": output.subcl.title
+                "time_update": output.time_update,
+                "num": output.num,
+                "file_url": output.file.url,
+                "file_data": get_las_data(output.file)
             } for output in Object.objects.all()
         ]
         return Response(output)
