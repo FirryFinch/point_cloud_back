@@ -14,7 +14,7 @@ from rest_framework.views import APIView
 
 from point_cloud_app.las_to_json_coordinates import get_x, get_y, get_z
 from point_cloud_app.models import Class, Subclass, Object
-from point_cloud_app.serializer import ClassSerializer, SubclassSerializer, ObjectSerializer
+from point_cloud_app.serializer import ClassSerializer, SubclassSerializer
 
 from minio import Minio
 
@@ -206,3 +206,16 @@ class ObjectsView(APIView):
         client.remove_object(MINIO_STORAGE_MEDIA_BUCKET_NAME, ob.file.name)
         ob.delete()
         return Response({'status', 'success'})
+
+    def put(self, request):
+        data = json.loads(request.body)
+        ob = Object.objects.get(id=data.get('id'))
+        ob.name = data.get('name')
+        ob.subcl = Subclass.objects.get(title=data.get('subcl'))
+        ob.length = data.get('length')
+        ob.width = data.get('width')
+        ob.height = data.get('height')
+        ob.num = data.get('num')
+        ob.save()
+        return Response({'status', 'success'})
+
