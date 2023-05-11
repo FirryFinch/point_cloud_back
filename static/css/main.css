@@ -7,8 +7,8 @@
 
 .subtext_position{
     display: grid;
-    grid-template-columns: repeat(2, 50vh);
-    column-gap: 50vh;
+    grid-template-columns: repeat(3, 50vh);
+    column-gap: 20vh;
     row-gap: 5vh;
     justify-content: center;
     text-align: center;

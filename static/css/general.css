@@ -217,6 +217,22 @@ body{
     border: 0.3vh solid #19A1A7; /*2 px*/
 }
 
+.redBtn{
+    box-sizing: border-box;
+    background: #FFFFFF;
+    font-family: 'Roboto', serif;
+    font-style: normal;
+    border: 0.3vh solid #EC6442; /*2 px*/
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor:pointer;
+}
+
+.redBtn:hover {
+    background: rgba(236, 100, 66, 0.08);
+}
+
 .dataInput{
     box-sizing: border-box;
     height: 7.4vh;                  /*50 px*/

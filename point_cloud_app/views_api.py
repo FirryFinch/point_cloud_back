@@ -1,16 +1,36 @@
 import json
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core.files import File
 from django.middleware.csrf import get_token
+from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from point_cloud_app.las_to_json_coordinates import get_las_data
+from point_cloud_app.las_to_json_coordinates import get_x, get_y, get_z
 from point_cloud_app.models import Class, Subclass, Object
 from point_cloud_app.serializer import ClassSerializer, SubclassSerializer, ObjectSerializer
+
+from minio import Minio
+
+from point_cloud_back.settings import MINIO_STORAGE_ENDPOINT, MINIO_STORAGE_ACCESS_KEY, MINIO_STORAGE_SECRET_KEY, \
+    MINIO_STORAGE_MEDIA_BUCKET_NAME
+
+client = Minio(
+    MINIO_STORAGE_ENDPOINT,
+    access_key=MINIO_STORAGE_ACCESS_KEY,
+    secret_key=MINIO_STORAGE_SECRET_KEY,
+    secure=False,
+)
+
+@login_required
+def listapi(request):
+    return render(request, 'listapi.html')
 
 
 @method_decorator(csrf_protect, name='dispatch')
@@ -61,7 +81,7 @@ class LoginView(APIView):
         else:
             group = 'user'
 
-        return Response({'detail': 'Successfully logged in', 'username': username, 'first_name': first_name,
+        return Response({'detail': 'Successfully logged in', 'user_id': user.id, 'username': username, 'first_name': first_name,
                          'last_name': last_name, 'group': group})
 
 
@@ -96,6 +116,7 @@ class ClassesView(APIView):
     def get(self, request):
         output = [
             {
+                "id": output.id,
                 "title": output.title
             } for output in Class.objects.all()
         ]
@@ -117,7 +138,9 @@ class SubclassesView(APIView):
     def get(self, request):
         output = [
             {
+                "id": output.id,
                 "title": output.title,
+                "cl_id": output.cl.id,
                 "cl": output.cl.title
             } for output in Subclass.objects.all()
         ]
@@ -134,24 +157,52 @@ class ObjectsView(APIView):
     def get(self, request):
         output = [
             {
+                "id": output.id,
                 "name": output.name,
+                "cl_id": output.subcl.cl.id,
                 "cl": output.subcl.cl.title,
+                "subcl_id": output.subcl.id,
                 "subcl": output.subcl.title,
                 "length": output.length,
                 "width": output.width,
                 "height": output.height,
                 "time_create": output.time_create,
-                "created_by": output.created_by.username,
+                "created_by_username": output.created_by.username,
+                "created_by_first_name": output.created_by.first_name,
+                "created_by_last_name": output.created_by.last_name,
                 "time_update": output.time_update,
                 "num": output.num,
                 "file_url": output.file.url,
-                "file_data": get_las_data(output.file)
+                "file_data_x": get_x(output.file),
+                "file_data_y": get_y(output.file),
+                "file_data_z": get_z(output.file)
             } for output in Object.objects.all()
         ]
         return Response(output)
 
     def post(self, request):
-        serializer = ObjectSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
+        loadedfile = File(request.data.get('file'))
+        loadedsubclid = int(request.data.get('subcl'))
+        subcl = Subclass.objects.get(id=loadedsubclid)
+        loadedcreated = request.data.get('created_by')
+        created = User.objects.get(id=loadedcreated)
+        newObject = Object.objects.create(
+            subcl=subcl,
+            name=request.data.get('name'),
+            length=request.data.get('length'),
+            width=request.data.get('width'),
+            height=request.data.get('height'),
+            file=loadedfile,
+            num=request.data.get('num'),
+            created_by=created,
+        )
+        newObject.save()
+        return Response({'status', 'success'})
+
+    def delete(self, request):
+        data = json.loads(request.body)
+        del_id = data.get('id')
+        ob = Object.objects.get(id=del_id)
+        client.remove_object(MINIO_STORAGE_MEDIA_BUCKET_NAME, ob.file.name)
+        ob.delete()
+        return Response({'status', 'success'})
