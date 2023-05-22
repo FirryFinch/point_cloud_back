@@ -28,6 +28,7 @@ client = Minio(
     secure=False,
 )
 
+
 @login_required
 def listapi(request):
     return render(request, 'listapi.html')
