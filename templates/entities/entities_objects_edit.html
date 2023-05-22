@@ -19,7 +19,7 @@
         <div style="margin-bottom: 2.9vh /*20 px*/; width: 45vh; font-size: 2.6vh; /*18 px*/ line-height: 3.1vh; /*21 px*/ font-family: 'Roboto', serif; color: #000000;">{{ form.file }}</div>
         <div style="margin-bottom: 2.9vh /*20 px*/; width: 45vh; font-size: 2.6vh; /*18 px*/ line-height: 3.1vh; /*21 px*/ font-family: 'Roboto', serif; color: #000000">{{ form.errors }}</div>
         <button class="blueBtn" style="width: 20vh; /*115 px*/ height: 6.5vh; /*44 px*/ font-size: 2.6vh; /*18 px*/ font-weight: 400; margin-right: 5vh; margin-top: 2vh" type="submit">Изменить</button>
-        <button class="blueBtn" style="width: 20vh; /*115 px*/ height: 6.5vh; /*44 px*/ font-size: 2.6vh; /*18 px*/ font-weight: 400" type="reset">Назад</button>
+        <button class="blueBtn" style="width: 20vh; /*115 px*/ height: 6.5vh; /*44 px*/ font-size: 2.6vh; /*18 px*/ font-weight: 400" type="reset" onclick="location.href='{% url 'entities_objects' %}'">Назад</button>
     </form>
 
 

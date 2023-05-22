@@ -48,6 +48,13 @@ class Object(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            this_record = Object.objects.get(pk=self.pk)
+            if this_record.file != self.file:
+                this_record.file.delete(save=False)
+        super(Object, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name = 'Объект'
         verbose_name_plural = 'Объекты'
