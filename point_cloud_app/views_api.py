@@ -12,7 +12,7 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from point_cloud_app.las_to_json_coordinates import get_x, get_y, get_z
+from point_cloud_app.las_to_json_coordinates import get_x, get_y, get_z, get_coord
 from point_cloud_app.models import Class, Subclass, Object
 from point_cloud_app.serializer import ClassSerializer, SubclassSerializer
 
@@ -176,7 +176,8 @@ class ObjectsView(APIView):
                 "file_url": output.file.url,
                 "file_data_x": get_x(output.file),
                 "file_data_y": get_y(output.file),
-                "file_data_z": get_z(output.file)
+                "file_data_z": get_z(output.file),
+                "file_data_xyz": get_coord(output.file)
             } for output in Object.objects.all()
         ]
         return Response(output)

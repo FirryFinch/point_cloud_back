@@ -14,3 +14,8 @@ def get_y(url):
 def get_z(url):
     las = laspy.read(url)
     return list(las.z)
+
+
+def get_coord(url):
+    las = laspy.read(url)
+    return list(las.xyz)
